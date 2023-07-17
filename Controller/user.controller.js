@@ -1,19 +1,21 @@
 const jwt = require("jsonwebtoken");
 const db = require("../Model");
-const { Op } = require("sequelize");
 const User = db.user;
 const Personality = db.personality;
 const Hobbies = db.hobbies;
 const Profile = db.profile;
 const bcrypt = require("bcrypt");
+//get the nodemailer from midleware
+const { sendEmailWithOTP, generateOTP, otpMap } = require("../Middleware/nodemailer.js");
+
 
 exports.userRegister = async (req, res) => {
     try {
-        const hash =await bcrypt.hashSync(req.body.password, 10); //for hash
+        const hash = await bcrypt.hashSync(req.body.password, 10); //for hash
 
         const user = await User.create({
             fullname: req.body.fullname,
-            gender:req.body.gender,
+            gender: req.body.gender,
             email: req.body.email,
             password: hash,
         });
@@ -91,13 +93,16 @@ exports.userPersonality = async (req, res) => {
 //userHobbies
 exports.userHobbies = async (req, res) => {
     try {
+        const { fun, food, movie, sport, userId } = req.body;
+
         const hobbies = await Hobbies.create({
-            fun: req.body.fun,
-            food: req.body.food,
-            movie: req.body.movie,
-            sport: req.body.sport,
-            userId: req.body.userId,
+            fun,
+            food,
+            movie,
+            sport,
+            userId,
         });
+
         res.status(201).json({
             status: "success",
             hobbies,
@@ -120,7 +125,7 @@ exports.AddProfileData = async (req, res) => {
             ProfileImage: req.file.filename,
             userId: req.body.userId,
 
-        }, );
+        },);
         res.status(201).json({
             status: "success",
             profile
@@ -132,7 +137,7 @@ exports.AddProfileData = async (req, res) => {
             message: error.message,
         });
     }
-  
+
 }
 
 //upodateProfile
@@ -200,8 +205,48 @@ exports.GetProfileData = async (req, res) => {
     }
 }
 
+exports.SendEmail = (req, res, next) => {
+    try {
+        const { email } = req.body;
+        const otp = generateOTP();
+        otpMap.set(email, otp);
+        req.email = email;
+        req.generatedOTP = otp;
+
+        sendEmailWithOTP(req, res, () => {
+            const generatedOTP = req.generatedOTP;
+
+            res.status(200).json({
+                status: 'success',
+                message: 'OTP sent successfully',
+                generatedOTP,
+            });
 
 
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Failed to send email with OTP' });
+    }
+};
+
+exports.VerifyOTP = (req, res, next) => {
+    const { email, enteredOTP } = req.body;
+    const sentOTP = otpMap.get(email);
+
+    if (!sentOTP) {
+        return res.status(400).json({ message: 'OTP not found' });
+    }
+    if (enteredOTP === sentOTP) {
+        // OTP verification successful
+        // Perform further actions as needed, e.g., password reset
+        return res.status(200).json({ message: 'OTP verified successfully' });
+    } else {
+        // Invalid OTP
+        return res.status(400).json({ message: 'Invalid OTP' });
+    }
+
+}
 
 
 

@@ -37,6 +37,7 @@ app.use([authJwt.verifyToken]);
 require('./Routes/personality.route')(app);
 require('./Routes/hobbies.route')(app);
 require('./Routes/profile.route')(app);
+require('./Routes/resetpassword.route')(app);
 
 
 

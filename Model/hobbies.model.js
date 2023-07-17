@@ -8,20 +8,24 @@ module.exports = (Sequelize, sequelize) => {
             autoIncrement: true
         },
         fun: {
-            type: Sequelize.STRING,
-            allowNull: false
+            type: Sequelize.ARRAY(Sequelize.STRING),
+            allowNull: false,
+            defaultValue: [],
         },
         food: {
-            type: Sequelize.STRING,
-            allowNull: false
+            type: Sequelize.ARRAY(Sequelize.STRING),
+            allowNull: false,
+            defaultValue: [],
         },
         movie: {
-            type: Sequelize.STRING,
-            allowNull: false
+            type: Sequelize.ARRAY(Sequelize.STRING),
+            allowNull: false,
+            defaultValue: [],
         },
         sport: {
-            type: Sequelize.STRING,
-            allowNull: false
+            type: Sequelize.ARRAY(Sequelize.STRING),
+            allowNull: false,
+            defaultValue: [],
         },
 
     });
