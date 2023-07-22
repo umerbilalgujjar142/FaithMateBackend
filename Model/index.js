@@ -1,9 +1,9 @@
 const Sequelize=require('sequelize')
 const config=require('../Config/db.config.js')
 const sequelize=new Sequelize(config.dbname,config.user,config.password,{
-host:config.host,
-dialect:config.dialect
-})
+    host:config.host,
+    dialect:config.dialect
+    })
 const db={}
 
 db.Sequelize=Sequelize;

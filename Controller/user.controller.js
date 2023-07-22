@@ -182,28 +182,31 @@ exports.UpdateProfileData = async (req, res) => {
 exports.GetProfileData = async (req, res) => {
     try {
         const profile = await Profile.findOne({
-            where: {
-                userId: req.body.userId,
-            },
-            include: [
-                {
-                    model: User,
-                },
-            ],
-
+          where: {
+            userId: req.query.userId,
+          },
         });
-        res.status(201).json({
-            status: "success",
-            profile,
+    
+        if (!profile) {
+          return res.status(404).json({
+            status: 'fail',
+            message: 'Profile data not found',
+          });
+        }
+    
+        res.status(200).json({
+          status: 'success',
+          data: profile,
         });
-    }
-    catch (error) {
-        res.status(400).json({
-            status: "fail",
-            message: error.message,
+      } catch (error) {
+        res.status(500).json({
+          status: 'error',
+          message: 'Internal server error',
         });
-    }
+      }
 }
+
+
 
 exports.SendEmail = (req, res, next) => {
     try {
@@ -238,14 +241,45 @@ exports.VerifyOTP = (req, res, next) => {
         return res.status(400).json({ message: 'OTP not found' });
     }
     if (enteredOTP === sentOTP) {
-        // OTP verification successful
-        // Perform further actions as needed, e.g., password reset
         return res.status(200).json({ message: 'OTP verified successfully' });
     } else {
-        // Invalid OTP
         return res.status(400).json({ message: 'Invalid OTP' });
     }
 
+}
+
+exports.updatePassword = async (req, res) => {
+    try {
+        const { password } = req.body;
+        const hash = await bcrypt.hash(password, 10);
+        const [updatedRows] = await User.update(
+            {
+                password: hash,
+            },
+            {
+                where: {
+                    id: req.body.userId,
+                },
+            }
+        );
+
+        if (updatedRows === 0) {
+            return res.status(404).json({
+                status: "fail",
+                message: "User not found",
+            });
+        }
+
+        res.status(200).json({
+            status: "success",
+            message: "Password updated successfully",
+        });
+    } catch (error) {
+        res.status(400).json({
+            status: "fail",
+            message: error.message,
+        });
+    }
 }
 
 
