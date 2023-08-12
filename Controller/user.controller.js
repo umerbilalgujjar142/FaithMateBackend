@@ -4,6 +4,10 @@ const User = db.user;
 const Personality = db.personality;
 const Hobbies = db.hobbies;
 const Profile = db.profile;
+const UploadStatus = db.uploadstatus;
+const geolib = require('geolib');
+
+
 const bcrypt = require("bcrypt");
 //get the nodemailer from midleware
 const { sendEmailWithOTP, generateOTP, otpMap } = require("../Middleware/nodemailer.js");
@@ -284,9 +288,53 @@ exports.updatePassword = async (req, res) => {
 
 
 
+exports.uploadStatus = async (req, res) => {
+    try {        
+        const uploadstatus = await UploadStatus.create({
+            Image: req.file.filename,
+            Status: req.body.Status,
+            longitude:req.body.longitude,
+            latitude:req.body.latitude,
+            userId: req.body.userId,
+        });
 
+        res.status(201).json({
+            status: "success",
+            uploadstatus: uploadstatus,
+        });
+    } catch (error) {
+        res.status(400).json({
+            status: "fail",
+            message: error.message,
+        });
+    }
+}
+    
+//get status
+exports.getStatus = async (req, res) => {
+    try {
+        const { latitude, longitude } = req.query; // Get latitude and longitude from query parameters
 
+        // Find images within 25km radius using geolib for distance calculation
+        const allImages = await UploadStatus.findAll(); // Retrieve all images
 
+        const imagesWithinRadius = allImages.filter(image => {
+            const distance = geolib.getDistance(
+                { latitude: parseFloat(image.latitude), longitude: parseFloat(image.longitude) },
+                { latitude: parseFloat(latitude), longitude: parseFloat(longitude) }
+            );
+            return distance <= 25000; // 25km in meters
+        });
 
-
+        res.status(200).json({
+            status: "success",
+            images: imagesWithinRadius
+        });
+    } catch (error) {
+        res.status(400).json({
+            status: "fail",
+            message: error.message
+        });
+    }
+}
 

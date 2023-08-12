@@ -14,6 +14,8 @@ db.user=require('./user.model.js')(Sequelize,sequelize);
 db.personality=require('./personality.model.js')(Sequelize,sequelize);
 db.hobbies=require('./hobbies.model.js')(Sequelize,sequelize);
 db.profile=require('./profile.model.js')(Sequelize,sequelize);
+db.uploadstatus=require('./uploadstatus.model.js')(Sequelize,sequelize);
+
 
 //user and personality relation
 db.user.hasOne(db.personality,{foreignKey:'userId'});
@@ -26,6 +28,11 @@ db.hobbies.belongsTo(db.user,{foreignKey:'userId'});
 //profile and user relation
 db.user.hasOne(db.profile,{foreignKey:'userId'});
 db.profile.belongsTo(db.user,{foreignKey:'userId'});
+
+//status and user relation
+db.user.hasOne(db.uploadstatus,{foreignKey:'userId'});
+db.uploadstatus.belongsTo(db.user,{foreignKey:'userId'});
+
 
 
 
