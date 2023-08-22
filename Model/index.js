@@ -15,6 +15,7 @@ db.personality=require('./personality.model.js')(Sequelize,sequelize);
 db.hobbies=require('./hobbies.model.js')(Sequelize,sequelize);
 db.profile=require('./profile.model.js')(Sequelize,sequelize);
 db.uploadstatus=require('./uploadstatus.model.js')(Sequelize,sequelize);
+db.bestmatch=require('./bestmatch.model.js')(Sequelize,sequelize);
 
 
 //user and personality relation
@@ -32,6 +33,10 @@ db.profile.belongsTo(db.user,{foreignKey:'userId'});
 //status and user relation
 db.user.hasOne(db.uploadstatus,{foreignKey:'userId'});
 db.uploadstatus.belongsTo(db.user,{foreignKey:'userId'});
+
+//bestmatch and user relation
+db.user.hasOne(db.bestmatch,{foreignKey:'userId'});
+db.bestmatch.belongsTo(db.user,{foreignKey:'userId'});
 
 
 

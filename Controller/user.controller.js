@@ -310,13 +310,12 @@ exports.uploadStatus = async (req, res) => {
     }
 }
     
-//get status
+
 exports.getStatus = async (req, res) => {
     try {
-        const { latitude, longitude } = req.query; // Get latitude and longitude from query parameters
+        const { latitude, longitude } = req.query; 
 
-        // Find images within 25km radius using geolib for distance calculation
-        const allImages = await UploadStatus.findAll(); // Retrieve all images
+        const allImages = await UploadStatus.findAll(); 
 
         const imagesWithinRadius = allImages.filter(image => {
             const distance = geolib.getDistance(
