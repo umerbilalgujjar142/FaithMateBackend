@@ -94,29 +94,40 @@ exports.userPersonality = async (req, res) => {
     }
 }
 
-//userHobbies
+
 exports.userHobbies = async (req, res) => {
     try {
-        const { fun, food, movie, sport, userId } = req.body;
-
-        const hobbies = await Hobbies.create({
-            fun,
-            food,
-            movie,
-            sport,
-            userId,
-        });
-
-        res.status(201).json({
-            status: "success",
-            hobbies,
-        });
-    } catch (error) {
-        res.status(400).json({
+        const { fun, food, sport, userId } = req.body;
+    
+        const user = await User.findByPk(userId);
+        console.log("--->",user.id);
+    
+        if (!user) {
+          return res.status(404).json({
             status: "fail",
-            message: error.message,
+            message: "User not found.",
+          });
+        }
+    
+        // Create hobbies record and associate it with the user
+        const hobbies = await Hobbies.create({
+          fun: fun ? fun.split(',') : [], // Convert string to array
+          food: food ? food.split(',') : [], // Convert string to array
+          sport: sport ? sport.split(',') : [], // Convert string to array
+          userId: user.id,
         });
-    }
+    
+        res.status(201).json({
+          status: "success",
+          hobbies,
+        });
+      } catch (error) {
+        console.error("Error:", error);
+        res.status(400).json({
+          status: "fail",
+          message: "An error occurred while processing hobbies data.",
+        });
+      }
 }
 
 //userProfile
@@ -126,10 +137,10 @@ exports.AddProfileData = async (req, res) => {
         const profile = await Profile.create({
             Bio: req.body.bio,
             Age: req.body.age,
-            ProfileImage: req.file.filename,
+            ProfileImage:  req.file.filename,
             userId: req.body.userId,
 
-        },);
+        });
         res.status(201).json({
             status: "success",
             profile

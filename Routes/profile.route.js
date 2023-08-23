@@ -6,7 +6,7 @@ module.exports=(app)=>{
     const route=express.Router();
 
     
-    route.post("/user/profiledata",upload.single('profileimage'),user.AddProfileData);
+    route.post("/user/profiledata",upload.single('profileimage'),user.AddProfileData); 
     route.post("/user/Updateprofiledata",user.UpdateProfileData);
     route.get("/user/getprofiledata",user.GetProfileData);
 

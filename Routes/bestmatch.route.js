@@ -10,6 +10,9 @@ module.exports=(app)=>{
     //apply search filter
     route.get("/getBestMatchFilter",user.getFilteredPosts);
 
+    //get single match details by id
+    route.get("/getSingleBest",user.getSingleBestMatch);
+
 
 
     

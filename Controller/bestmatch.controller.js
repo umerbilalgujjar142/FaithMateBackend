@@ -4,6 +4,8 @@ const BestMatch = db.bestmatch;
 const geolib = require('geolib');
 const { Op, Sequelize } = require("sequelize");
 const sequelize = db.sequelize;
+const Profile = db.profile;
+const Hobbies = db.hobbies;
 
 
 
@@ -110,6 +112,62 @@ exports.getFilteredPosts = async (req, res) => {
     res.status(400).json({
       status: 'fail',
       message: error.message,
+    });
+  }
+};
+
+
+exports.getSingleBestMatch = async (req, res) => {
+  try {
+    const { userId } = req.query;
+
+    const singleMatch = await BestMatch.findOne({
+      where: {
+        userId: userId, // Assuming the foreign key for User is UserId
+      },
+      attributes: {
+        exclude: ['createdAt', 'updatedAt'],
+      },
+      include: [
+        {
+          model: User,
+          attributes: {
+            exclude: ['createdAt', 'updatedAt'],
+          },
+          include: [
+            {
+              model: Profile,
+              attributes: {
+                exclude: ['createdAt', 'updatedAt'],
+              },
+            },
+            {
+              model: Hobbies,
+              attributes: {
+                exclude: ['createdAt', 'updatedAt'],
+              },
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!singleMatch) {
+      
+      return res.status(404).json({
+        status: 'fail',
+        message: 'No matching data found for the given user ID.',
+      });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      singleMatch,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'An error occurred while fetching data.',
     });
   }
 };
