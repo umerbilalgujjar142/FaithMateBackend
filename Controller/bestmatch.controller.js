@@ -38,8 +38,22 @@ exports.bestMatch = async (req, res) => {
 exports.getBestMatch = async (req, res) => {
   try {
     const { latitude, longitude } = req.query;
-
-    const allImages = await BestMatch.findAll();
+    let startIndex = ((req.query.page * 5) - 5);
+    const allImages = await BestMatch.findAll({
+      include: [
+        {
+          model: User,
+          attributes: {
+            exclude: ["createdAt", "updatedAt","email","password"],
+          },
+        },
+      ],
+      limit: 5,
+      offset: startIndex,
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
+    });
 
     const imagesWithinRadius = allImages.filter(image => {
       const distance = geolib.getDistance(
