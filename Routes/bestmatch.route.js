@@ -13,6 +13,12 @@ module.exports=(app)=>{
     //get single match details by id
     route.get("/getSingleBest",user.getSingleBestMatch);
 
+    route.get("/updateLikeStatus",user.updateLikeStatus);
+    route.get("/updateFavouriteStatus",user.updateFavouriteStatus);
+
+    route.get("/getBasedLikedStatus",user.GetBasedLikedStatus);
+    route.get("/getFavouriteStatus",user.GetBasedFavouriteStatus);
+
 
 
     

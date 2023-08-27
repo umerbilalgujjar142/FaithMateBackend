@@ -22,6 +22,16 @@ module.exports = (Sequelize, sequelize) => {
             type: Sequelize.STRING,
             allowNull: true
         },
+        Liked: {
+            type: Sequelize.BOOLEAN,
+            allowNull: true,
+            defaultValue: false
+        },
+        Favourite: {
+            type: Sequelize.BOOLEAN,
+            allowNull: true,
+            defaultValue: false
+        },
     
     });
     return BestMatch;

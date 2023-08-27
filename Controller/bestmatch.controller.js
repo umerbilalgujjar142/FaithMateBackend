@@ -63,9 +63,7 @@ exports.getBestMatch = async (req, res) => {
       return distance <= 25000; // 25km in meters
     });
 
-
-
-    res.status(200).json({
+   res.status(200).json({
       status: 'success',
       matchedUsers: imagesWithinRadius
     });
@@ -76,6 +74,9 @@ exports.getBestMatch = async (req, res) => {
     });
   }
 }
+
+
+
 exports.getFilteredPosts = async (req, res) => {
   try {
     const { gender, distance, city } = req.query;
@@ -198,3 +199,133 @@ exports.getSingleBestMatch = async (req, res) => {
     });
   }
 };
+
+//update the Like status
+exports.updateLikeStatus = async (req, res) => {
+  try {
+    const { id, liked } = req.query;
+
+    const updatedLikeStatus = await BestMatch.update(
+      {
+        Liked: liked,
+      },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+
+    res.status(200).json({
+      status: 'success',
+      updatedLikeStatus,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'An error occurred while updating data.',
+    });
+  }
+}
+
+//update the Favourite status
+exports.updateFavouriteStatus = async (req, res) => {
+  try {
+    const { id, favourite } = req.query;
+
+    const updatedFavouriteStatus = await BestMatch.update(
+      {
+        Favourite: favourite,
+      },
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
+
+    res.status(200).json({
+      status: 'success',
+      updatedFavouriteStatus,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'An error occurred while updating data.',
+    });
+  }
+}
+
+
+
+exports.GetBasedLikedStatus = async (req, res) => {
+try {
+    const { userId } = req.query;
+    let startIndex = ((req.query.page * 5) - 5);
+    const allImages = await BestMatch.findAll({
+      where: {
+        Liked: true,
+        userId: userId,
+      },
+      include: [
+        {
+          model: User,
+          attributes: {
+            exclude: ["createdAt", "updatedAt","email","password"],
+          },
+        },
+      ],
+      limit: 5,
+      offset: startIndex,
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
+    });
+
+   res.status(200).json({
+      status: 'success',
+      LikedUser: allImages
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+      message: error.message,
+    });
+  }
+}
+
+exports.GetBasedFavouriteStatus = async (req, res) => {
+  try {
+    const { userId } = req.query;
+    let startIndex = ((req.query.page * 5) - 5);
+    const allImages = await BestMatch.findAll({
+      where: {
+        Favourite: true,
+        userId: userId,
+      },
+      include: [
+        {
+          model: User,
+          attributes: {
+            exclude: ["createdAt", "updatedAt","email","password"],
+          },
+        },
+      ],
+      limit: 5,
+      offset: startIndex,
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
+    });
+
+   res.status(200).json({
+      status: 'success',
+      FavouriteUser: allImages
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+      message: error.message,
+    });
+  }
+}
