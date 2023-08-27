@@ -87,7 +87,7 @@ exports.getFilteredPosts = async (req, res) => {
         gender: gender, // Apply gender filter
       },
       attributes: {
-        exclude: ['createdAt', 'updatedAt'],
+        exclude: ['createdAt', 'updatedAt',"email","password"],
       },
       include: [
         {
@@ -146,7 +146,7 @@ exports.getSingleBestMatch = async (req, res) => {
         {
           model: User,
           attributes: {
-            exclude: ['createdAt', 'updatedAt'],
+            exclude: ['createdAt', 'updatedAt',"email","password"],
           },
           include: [
             {
