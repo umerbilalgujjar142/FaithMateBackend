@@ -133,11 +133,11 @@ exports.getFilteredPosts = async (req, res) => {
 
 exports.getSingleBestMatch = async (req, res) => {
   try {
-    const { userId } = req.query;
+    const { id,currentLng,currentLat } = req.query;
 
     const singleMatch = await BestMatch.findOne({
       where: {
-        userId: userId, // Assuming the foreign key for User is UserId
+        id: id, // Assuming the foreign key for User is UserId
       },
       attributes: {
         exclude: ['createdAt', 'updatedAt'],
@@ -166,6 +166,18 @@ exports.getSingleBestMatch = async (req, res) => {
       ],
     });
 
+    const matchLat = singleMatch.latitude; 
+    const matchLng = singleMatch.longitude; 
+
+    // Calculate the distance using geolib library
+    const distanceInMeters = geolib.getDistance(
+      { latitude: currentLat, longitude: currentLng },
+      { latitude: matchLat, longitude: matchLng }
+    );
+
+    const distanceInKm = Math.floor(distanceInMeters / 1000);
+
+
     if (!singleMatch) {
       
       return res.status(404).json({
@@ -177,6 +189,7 @@ exports.getSingleBestMatch = async (req, res) => {
     res.status(200).json({
       status: 'success',
       singleMatch,
+      distance: distanceInKm,
     });
   } catch (error) {
     res.status(500).json({
