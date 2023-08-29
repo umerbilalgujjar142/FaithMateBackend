@@ -12,7 +12,7 @@ module.exports=(app)=>{
 
 
     //upload status
-    route.post("/user/uploadStatus",([authJwt.verifyToken],(upload.single('Image'))),user.uploadStatus);
+    route.post("/user/uploadStatus",(upload.single('Image')),user.uploadStatus);
     //get status 
     route.get("/user/getStatus",([authJwt.verifyToken]),user.getStatus);
 

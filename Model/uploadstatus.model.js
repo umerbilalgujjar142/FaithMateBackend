@@ -10,15 +10,16 @@ module.exports = (Sequelize, sequelize) => {
             type: Sequelize.STRING,
             allowNull: true
         },
-        Status: {
-            type: Sequelize.STRING,
-            allowNull: true
-        },
+        
         longitude: {
             type: Sequelize.STRING,
             allowNull: true
         },
         latitude: {
+            type: Sequelize.STRING,
+            allowNull: true
+        },
+        expirationTimestamp: {
             type: Sequelize.STRING,
             allowNull: true
         },

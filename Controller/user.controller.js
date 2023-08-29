@@ -7,6 +7,7 @@ const Profile = db.profile;
 const UploadStatus = db.uploadstatus;
 const geolib = require('geolib');
 
+const moment = require('moment'); // For working with timestamps
 
 const bcrypt = require("bcrypt");
 //get the nodemailer from midleware
@@ -300,13 +301,14 @@ exports.updatePassword = async (req, res) => {
 
 
 exports.uploadStatus = async (req, res) => {
-    try {        
+    try {
+        const expirationTime = moment().add(24, 'hours');
         const uploadstatus = await UploadStatus.create({
             Image: req.file.filename,
-            Status: req.body.Status,
             longitude:req.body.longitude,
             latitude:req.body.latitude,
             userId: req.body.userId,
+            expirationTimestamp: expirationTime.toISOString()
         });
 
         res.status(201).json({
@@ -327,13 +329,13 @@ exports.getStatus = async (req, res) => {
         const { latitude, longitude } = req.query; 
 
         const allImages = await UploadStatus.findAll(); 
-
+        const currentTime = moment();
         const imagesWithinRadius = allImages.filter(image => {
             const distance = geolib.getDistance(
                 { latitude: parseFloat(image.latitude), longitude: parseFloat(image.longitude) },
                 { latitude: parseFloat(latitude), longitude: parseFloat(longitude) }
             );
-            return distance <= 25000; // 25km in meters
+            return distance <= 25000 && moment(image.expirationTimestamp).isAfter(currentTime); // 25km in meters
         });
 
         res.status(200).json({

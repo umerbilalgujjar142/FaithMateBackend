@@ -32,13 +32,13 @@ app.use(function (req, res, next) {
 });
 
 
-require('./Routes/bestmatch.route')(app);
 
 app.use([authJwt.verifyToken]);
 require('./Routes/personality.route')(app);
 require('./Routes/hobbies.route')(app);
 require('./Routes/profile.route')(app);
 require('./Routes/resetpassword.route')(app);
+require('./Routes/bestmatch.route')(app);
 
 
 

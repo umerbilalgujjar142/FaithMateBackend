@@ -12,12 +12,14 @@ const Hobbies = db.hobbies;
 
 exports.bestMatch = async (req, res) => {
   try {
+   
     const uploadstatus = await BestMatch.create({
       Image: req.file.filename,
       location: req.body.location,
       userId: req.body.userId,
       longitude: req.body.longitude,
       latitude: req.body.latitude,
+      
     });
 
     res.status(201).json({
