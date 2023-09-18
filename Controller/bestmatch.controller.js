@@ -39,14 +39,15 @@ exports.bestMatch = async (req, res) => {
 
 exports.getBestMatch = async (req, res) => {
   try {
-    const { latitude, longitude } = req.query;
+    const { latitude, longitude, userGender } = req.query;
     let startIndex = ((req.query.page * 5) - 5);
+    
     const allImages = await BestMatch.findAll({
       include: [
         {
           model: User,
           attributes: {
-            exclude: ["createdAt", "updatedAt","email","password"],
+            exclude: ["createdAt", "updatedAt", "email", "password"],
           },
         },
       ],
@@ -58,14 +59,24 @@ exports.getBestMatch = async (req, res) => {
     });
 
     const imagesWithinRadius = allImages.filter(image => {
-      const distance = geolib.getDistance(
-        { latitude: parseFloat(image.latitude), longitude: parseFloat(image.longitude) },
-        { latitude: parseFloat(latitude), longitude: parseFloat(longitude) }
-      );
-      return distance <= 25000; // 25km in meters
+      const user = image.dataValues.user; // Access user object within dataValues
+      if (user) {
+        const isMaleUser = userGender === 'Male'; 
+        const isFemaleImage = user.dataValues.gender === 'Female'; // Access gender within dataValues
+        
+        if ((isMaleUser && isFemaleImage) || (!isMaleUser && !isFemaleImage)) {
+          const distance = geolib.getDistance(
+            { latitude: parseFloat(image.latitude), longitude: parseFloat(image.longitude) },
+            { latitude: parseFloat(latitude), longitude: parseFloat(longitude) }
+          );
+          return distance <= 25000; // 25km in meters
+        }
+      }
+      
+      return false;
     });
 
-   res.status(200).json({
+    res.status(200).json({
       status: 'success',
       matchedUsers: imagesWithinRadius
     });
@@ -76,6 +87,9 @@ exports.getBestMatch = async (req, res) => {
     });
   }
 }
+
+
+
 
 
 
