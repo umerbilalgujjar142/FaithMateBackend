@@ -22,7 +22,11 @@ module.exports=(Sequelize,sequelize)=>{
             type:Sequelize.STRING,
             allowNull:false
         },
-        
+        profession:{
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+
     })
     return User;
 }

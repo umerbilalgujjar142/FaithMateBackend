@@ -50,6 +50,7 @@ exports.getBestMatch = async (req, res) => {
             exclude: ["createdAt", "updatedAt", "email", "password"],
           },
         },
+        
       ],
       limit: 5,
       offset: startIndex,

@@ -17,8 +17,14 @@ module.exports = (Sequelize, sequelize) => {
         ProfileImage:{
             type: Sequelize.STRING,
             allowNull: true
-        }
+        },
+        AgePrefrences:{
+            type: Sequelize.ARRAY(Sequelize.INTEGER),
+            allowNull: false
+        },
+       
 
+    
     });
     return Profile;
 

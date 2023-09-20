@@ -42,4 +42,6 @@ db.bestmatch.belongsTo(db.user,{foreignKey:'userId'});
 
 
 
+
+
 module.exports=db;

@@ -23,6 +23,7 @@ exports.userRegister = async (req, res) => {
             gender: req.body.gender,
             email: req.body.email,
             password: hash,
+            profession: req.body.profession,
         });
         res.status(201).json({
             status: "success",
@@ -135,17 +136,21 @@ exports.userHobbies = async (req, res) => {
 exports.AddProfileData = async (req, res) => {
 
     try {
+        const agePreferences = req.body.AgePrefrences.split(',').map(Number);
+
         const profile = await Profile.create({
             Bio: req.body.bio,
             Age: req.body.age,
-            ProfileImage:  req.file.filename,
+            ProfileImage: req.file.filename,
             userId: req.body.userId,
-
+            AgePrefrences: agePreferences,
+            profession: req.body.profession,
         });
         res.status(201).json({
             status: "success",
             profile
         });
+
     }
     catch (error) {
         res.status(400).json({
