@@ -32,6 +32,10 @@ module.exports = (Sequelize, sequelize) => {
             allowNull: true,
             defaultValue: false
         },
+        country: {
+            type: Sequelize.STRING,
+            allowNull: true
+        },
     
     });
     return BestMatch;

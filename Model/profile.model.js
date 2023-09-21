@@ -18,10 +18,14 @@ module.exports = (Sequelize, sequelize) => {
             type: Sequelize.STRING,
             allowNull: true
         },
-        AgePrefrences:{
-            type: Sequelize.ARRAY(Sequelize.INTEGER),
+        MinAgePreference: {
+            type: Sequelize.INTEGER,
             allowNull: false
         },
+        MaxAgePreference: { 
+            type: Sequelize.INTEGER,
+            allowNull: false
+        }
        
 
     

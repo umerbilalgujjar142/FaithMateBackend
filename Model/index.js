@@ -38,7 +38,9 @@ db.uploadstatus.belongsTo(db.user,{foreignKey:'userId'});
 db.user.hasOne(db.bestmatch,{foreignKey:'userId'});
 db.bestmatch.belongsTo(db.user,{foreignKey:'userId'});
 
-
+//bestmatch and profile relation
+db.profile.hasOne(db.bestmatch,{foreignKey:'userId'});
+db.bestmatch.belongsTo(db.profile,{foreignKey:'userId'});
 
 
 

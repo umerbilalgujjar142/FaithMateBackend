@@ -2,11 +2,9 @@ const db = require("../Model");
 const User = db.user;
 const BestMatch = db.bestmatch;
 const geolib = require('geolib');
-const { Op, Sequelize } = require("sequelize");
-const sequelize = db.sequelize;
 const Profile = db.profile;
 const Hobbies = db.hobbies;
-
+const { Op } = require('sequelize');
 
 
 
@@ -19,6 +17,7 @@ exports.bestMatch = async (req, res) => {
       userId: req.body.userId,
       longitude: req.body.longitude,
       latitude: req.body.latitude,
+      country: req.body.country,
       
     });
 
@@ -96,57 +95,49 @@ exports.getBestMatch = async (req, res) => {
 
 exports.getFilteredPosts = async (req, res) => {
   try {
-    const { gender, distance, city } = req.query;
+      const { country, minAge,maxAge } = req.body;
 
-    const distanceInMeters = parseFloat(distance) * 1000;
-
-    const filteredPosts = await User.findAll({
-      where: {
-        gender: gender, // Apply gender filter
-      },
-      attributes: {
-        exclude: ['createdAt', 'updatedAt',"email","password"],
-      },
-      include: [
-        {
-          model: BestMatch,
+      const filteredProfiles = await Profile.findAll({
           where: {
-            location: city,
+              MinAgePreference: {
+                  [Op.lte]: maxAge
+              },
+              MaxAgePreference: {
+                  [Op.gte]: minAge
+              }
+
           },
           attributes: {
-            exclude: ['createdAt', 'updatedAt'],
+              exclude: ['createdAt', 'updatedAt', 'email', 'password'],
           },
-        },
-      ],
-    });
+          include: [
+              {
+                  model: BestMatch,
+                  where: {
+                      country: country,
+                  },
+                  attributes: {
+                      exclude: ['createdAt', 'updatedAt'],
+                  },
+              },
+          ],
+      });
 
-    const postsWithinDistance = filteredPosts.filter(user => {
-      const bestMatch = user.BestMatch;
-      const imageDistance = geolib.getDistance(
-        {
-          latitude: parseFloat(bestMatch.latitude),
-          longitude: parseFloat(bestMatch.longitude),
-        },
-        {
-          latitude: parseFloat(req.query.latitude),
-          longitude: parseFloat(req.query.longitude),
-        }
-      );
-
-      return imageDistance <= distanceInMeters;
-    });
-
-    res.status(200).json({
-      status: 'success',
-      postsWithinDistance,
-    });
+      res.status(200).json({
+          status: 'success',
+          filteredProfiles,
+      });
   } catch (error) {
-    res.status(400).json({
-      status: 'fail',
-      message: error.message,
-    });
+      res.status(400).json({
+          status: 'fail',
+          message: error.message,
+      });
   }
 };
+
+
+
+
 
 
 exports.getSingleBestMatch = async (req, res) => {
