@@ -121,6 +121,15 @@ exports.getFilteredPosts = async (req, res) => {
                   },
               },
           ],
+          include:[
+              {
+                model:User,
+                attributes:{
+                  exclude:['createdAt','updatedAt','password','email']
+                }
+
+              }
+          ]
       });
 
       res.status(200).json({

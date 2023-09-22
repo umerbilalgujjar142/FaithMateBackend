@@ -8,7 +8,7 @@ module.exports=(app)=>{
     route.post("/bestmatch",(upload.single('Image')),user.bestMatch);
     route.get("/getBestMatch",user.getBestMatch);
     //apply search filter
-    route.get("/getBestMatchFilter",user.getFilteredPosts);
+    route.post("/getBestMatchFilter",user.getFilteredPosts);
 
     //get single match details by id
     route.get("/getSingleBest",user.getSingleBestMatch);
