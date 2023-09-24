@@ -14,7 +14,7 @@ module.exports=(app)=>{
     route.get("/getSingleBest",user.getSingleBestMatch);
 
     route.post("/updateLikeStatus",user.updateLikeStatus);
-    route.get("/updateFavouriteStatus",user.updateFavouriteStatus);
+    route.post("/updateFavouriteStatus",user.updateFavouriteStatus);
 
     route.get("/getBasedLikedStatus",user.GetBasedLikedStatus);
     route.get("/getFavouriteStatus",user.GetBasedFavouriteStatus);

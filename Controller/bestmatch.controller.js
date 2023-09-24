@@ -220,8 +220,7 @@ exports.getSingleBestMatch = async (req, res) => {
 //update the Like status
 exports.updateLikeStatus = async (req, res) => {
   try {
-    const { id, liked, likerId } = req.query;
-    console.log("--------------",id, liked, likerId);
+    const { id, liked, likerId } = req.body;
     let likedBy = await BestMatch.findOne({
       where: {
         id: id,
@@ -233,12 +232,10 @@ exports.updateLikeStatus = async (req, res) => {
       likedBy = likedBy.likedBy || [];
 
       if (liked) {
-        // Add likerId to the likedBy array if not already present
         if (!likedBy.includes(likerId)) {
           likedBy.push(likerId);
         }
       } else {
-        // Remove likerId from the likedBy array
         likedBy = likedBy.filter(userId => userId !== likerId);
       }
 
@@ -253,7 +250,6 @@ exports.updateLikeStatus = async (req, res) => {
           },
         }
       );
-      console.log("-------updatedLikeStatus-------",updatedLikeStatus);
 
       res.status(200).json({
         status: 'success',
@@ -274,23 +270,41 @@ exports.updateLikeStatus = async (req, res) => {
 //update the Favourite status
 exports.updateFavouriteStatus = async (req, res) => {
   try {
-    const { id, favourite } = req.query;
-
-    const updatedFavouriteStatus = await BestMatch.update(
-      {
-        Favourite: favourite,
-      },
-      {
-        where: {
-          id: id,
-        },
-      }
-    );
-
-    res.status(200).json({
-      status: 'success',
-      updatedFavouriteStatus,
+    const { id, favourite, favourerId } = req.body; // Assuming favourerId is the ID of the user who favorited
+    
+    let favouritedBy = await BestMatch.findOne({
+      where: { id: id },
+      attributes: ['FavouritedBy'],
     });
+
+    if (favouritedBy) {
+      favouritedBy = favouritedBy.FavouritedBy || [];
+
+      if (favourite) {
+        if (!favouritedBy.includes(favourerId)) {
+          favouritedBy.push(favourerId);
+        }
+      } else {
+        favouritedBy = favouritedBy.filter(userId => userId !== favourerId);
+      }
+
+      const updatedFavouriteStatus = await BestMatch.update(
+        {
+          FavouritedBy: favouritedBy,
+          Favourite: favourite,
+        },
+        {
+          where: { id: id },
+        }
+      );
+
+      res.status(200).json({
+        status: 'success',
+        updatedFavouriteStatus,
+      });
+    } else {
+      throw new Error('Item not found');
+    }
   } catch (error) {
     res.status(500).json({
       status: 'error',
@@ -344,16 +358,18 @@ exports.GetBasedFavouriteStatus = async (req, res) => {
   try {
     const { userId } = req.query;
     let startIndex = ((req.query.page * 5) - 5);
-    const allImages = await BestMatch.findAll({
+    const favouritePosts = await BestMatch.findAll({
       where: {
         Favourite: true,
-        userId: userId,
+        FavouritedBy: {
+          [Op.contains]: [parseInt(userId, 10)],
+        },
       },
       include: [
         {
           model: User,
           attributes: {
-            exclude: ["createdAt", "updatedAt","email","password"],
+            exclude: ["createdAt", "updatedAt", "email", "password"],
           },
         },
       ],
@@ -364,14 +380,15 @@ exports.GetBasedFavouriteStatus = async (req, res) => {
       },
     });
 
-   res.status(200).json({
+    res.status(200).json({
       status: 'success',
-      FavouriteUser: allImages
+      FavouritePosts: favouritePosts
     });
   } catch (error) {
-    res.status(400).json({
-      status: 'fail',
-      message: error.message,
+    console.error(error); // Log the error for debugging
+    res.status(500).json({
+      status: 'error',
+      message: 'An error occurred while retrieving favorite posts.',
     });
   }
 }

@@ -39,7 +39,11 @@ module.exports = (Sequelize, sequelize) => {
         likedBy: {
             type: Sequelize.ARRAY(Sequelize.INTEGER),
             allowNull: true,
-          }
+          },
+          FavouritedBy: {
+            type: Sequelize.ARRAY(Sequelize.INTEGER), 
+            allowNull: true, 
+          },
     });
     return BestMatch;
 
