@@ -95,54 +95,59 @@ exports.getBestMatch = async (req, res) => {
 
 exports.getFilteredPosts = async (req, res) => {
   try {
-      const { country, minAge,maxAge } = req.body;
+    const { country, minAge, maxAge } = req.body;
 
-      const filteredProfiles = await Profile.findAll({
+    const filteredProfiles = await Profile.findAll({
+      where: {
+        [Op.and]: [
+          {
+            MinAgePreference: {
+              [Op.lte]: minAge 
+            },
+          },
+          {
+            MaxAgePreference: {
+              [Op.gte]: maxAge
+            },
+          },
+        ],
+      },
+      attributes: {
+        exclude: ['createdAt', 'updatedAt', 'email', 'password'],
+      },
+      include: [
+        {
+          model: BestMatch,
           where: {
-              MinAgePreference: {
-                  [Op.lte]: maxAge
-              },
-              MaxAgePreference: {
-                  [Op.gte]: minAge
-              }
-
+            country: country
           },
           attributes: {
-              exclude: ['createdAt', 'updatedAt', 'email', 'password'],
+            exclude: ['createdAt', 'updatedAt'],
           },
-          include: [
-              {
-                  model: BestMatch,
-                  where: {
-                      country: country,
-                  },
-                  attributes: {
-                      exclude: ['createdAt', 'updatedAt'],
-                  },
-              },
-          ],
-          include:[
-              {
-                model:User,
-                attributes:{
-                  exclude:['createdAt','updatedAt','password','email']
-                }
+        },
+        {
+          model: User,
+          attributes: {
+            exclude: ['createdAt', 'updatedAt', 'password', 'email']
+          }
+        }
+      ]
+    });
 
-              }
-          ]
-      });
-
-      res.status(200).json({
-          status: 'success',
-          filteredProfiles,
-      });
+    res.status(200).json({
+      status: 'success',
+      filteredProfiles,
+    });
   } catch (error) {
-      res.status(400).json({
-          status: 'fail',
-          message: error.message,
-      });
+    res.status(400).json({
+      status: 'fail',
+      message: error.message,
+    });
   }
 };
+
+
+
 
 
 
