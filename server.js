@@ -54,6 +54,7 @@ require('./Routes/profile.route')(app);
 require('./Routes/resetpassword.route')(app);
 require('./Routes/bestmatch.route')(app);
 require('./Routes/chat.route')(app);
+require('./Routes/subscription.route')(app);
 
 
 

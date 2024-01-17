@@ -17,6 +17,9 @@ db.profile=require('./profile.model.js')(Sequelize,sequelize);
 db.uploadstatus=require('./uploadstatus.model.js')(Sequelize,sequelize);
 db.bestmatch=require('./bestmatch.model.js')(Sequelize,sequelize);
 db.chat=require('./chat.model.js')(Sequelize,sequelize);
+db.subscription=require('./subscription.model.js')(Sequelize,sequelize);
+
+
 
 
 
@@ -48,6 +51,11 @@ db.bestmatch.belongsTo(db.profile,{foreignKey:'userId'});
 //Chat and user relation
 db.user.hasMany(db.chat,{foreignKey:'senderId'});
 db.chat.belongsTo(db.user,{foreignKey:'senderId'});
+
+//subscription and user relation
+db.user.hasOne(db.subscription,{foreignKey:'userId'});
+db.subscription.belongsTo(db.user,{foreignKey:'userId'});
+
 
 
 
