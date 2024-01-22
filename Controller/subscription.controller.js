@@ -31,12 +31,11 @@ exports.getSubscription = async (req, res) => {
   try {
     const { userId, date } = req.query;
 
-    // Find all subscriptions for the user
     const subscriptions = await Subscription.findAll({
       where: {
         userId: userId,
         endDate: {
-          [Op.gte]: new Date(date), // Check if expirationDate is greater than or equal to the current date
+          [Op.gte]: new Date(date),
         },
       },
       order: [['createdAt', 'ASC']],
