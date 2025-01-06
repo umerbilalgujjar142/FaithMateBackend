@@ -276,7 +276,7 @@ exports.updateLikeStatus = async (req, res) => {
 //update the Favourite status
 exports.updateFavouriteStatus = async (req, res) => {
   try {
-    const { id, favourite, favourerId } = req.body; // Assuming favourerId is the ID of the user who favorited
+    const { id, favourite, favourerId } = req.body; 
     
     let favouritedBy = await BestMatch.findOne({
       where: { id: id },

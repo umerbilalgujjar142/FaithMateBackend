@@ -23,6 +23,9 @@ db.subscription=require('./subscription.model.js')(Sequelize,sequelize);
 
 
 
+
+
+
 //user and personality relation
 db.user.hasOne(db.personality,{foreignKey:'userId'});
 db.personality.belongsTo(db.user,{foreignKey:'userId'});

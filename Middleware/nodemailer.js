@@ -2,10 +2,10 @@ const nodemailer = require('nodemailer');
 
 // Create a nodemailer transporter
 const transporter = nodemailer.createTransport({
-  service: 'Outlook',
+  service: 'Gmail',
   auth: {
-    user: 'umerbilalgujjar123@outlook.com',
-    pass: 'UmerBilalGujjar242@',
+    user: 'xxxx@gmail.com',
+    pass: 'xxxx@xxxxxxx',
   },
 });
 
@@ -26,7 +26,7 @@ function sendEmailWithOTP(req, res, next) {
   const otp = generateOTP();
   otpMap.set(email, otp);
   const mailOptions = {
-    from: 'umerbilalgujjar123@outlook.com',
+    from: 'xxxx@gmail.com',
     to: email,
     subject: 'Password Reset OTP',
     text: `Your OTP is: ${otp}`,

@@ -37,15 +37,15 @@ module.exports = (Sequelize, sequelize) => {
             allowNull: true
         },
         likedBy: {
-            type: Sequelize.ARRAY(Sequelize.INTEGER),
-            allowNull: true,
-          },
-          FavouritedBy: {
-            type: Sequelize.ARRAY(Sequelize.INTEGER), 
-            allowNull: true, 
-          },
+            type: Sequelize.JSON,
+            allowNull: true
+        },
+        FavouritedBy: {
+            type: Sequelize.JSON,
+            allowNull: true
+        }
     });
-    return BestMatch;
+    return  BestMatch
 
 
 

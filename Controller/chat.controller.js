@@ -34,7 +34,7 @@ exports.sendMessage = async (req, res) => {
           senderId: senderId,
           receiverId: receiverId,
         },
-        order: [['createdAt', 'ASC']], // Order messages by creation date
+        order: [['createdAt', 'ASC']], 
       });
   
       res.status(200).json({

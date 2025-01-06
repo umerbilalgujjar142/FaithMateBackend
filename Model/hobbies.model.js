@@ -1,6 +1,4 @@
 module.exports = (Sequelize, sequelize) => {
-
-    //add fun, food, movie,sport
     const Hobbies = sequelize.define('hobbies', {
         id: {
             type: Sequelize.INTEGER,
@@ -8,28 +6,26 @@ module.exports = (Sequelize, sequelize) => {
             autoIncrement: true
         },
         fun: {
-            type: Sequelize.ARRAY(Sequelize.STRING),
+            type: Sequelize.JSON,
             allowNull: false,
             defaultValue: [],
         },
         food: {
-            type: Sequelize.ARRAY(Sequelize.STRING),
+            type: Sequelize.JSON,
             allowNull: false,
             defaultValue: [],
         },
         movie: {
-            type: Sequelize.ARRAY(Sequelize.STRING),
+            type: Sequelize.JSON,
             allowNull: false,
             defaultValue: [],
         },
         sport: {
-            type: Sequelize.ARRAY(Sequelize.STRING),
+            type: Sequelize.JSON,
             allowNull: false,
             defaultValue: [],
         },
-
     });
+
     return Hobbies;
-
-
 }

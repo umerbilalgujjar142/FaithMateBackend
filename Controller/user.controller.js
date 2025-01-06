@@ -7,7 +7,7 @@ const Profile = db.profile;
 const UploadStatus = db.uploadstatus;
 const geolib = require('geolib');
 
-const moment = require('moment'); // For working with timestamps
+const moment = require('moment');
 
 const bcrypt = require("bcrypt");
 //get the nodemailer from midleware
